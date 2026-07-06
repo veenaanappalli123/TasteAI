@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 
 import { registerSchema, loginSchema } from "../validators/auth.validator";
 import { registerUser, loginUser } from "../services/auth.service";
+import { getCurrentUser } from "../services/auth.service";
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -41,6 +42,25 @@ export const login = async (req: Request, res: Response) => {
   } catch (error: any) {
 
     return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};
+
+export const me = async (req: Request, res: Response) => {
+  try {
+    const user = await getCurrentUser(req.userId!);
+
+    return res.json({
+      success: true,
+      data: user,
+    });
+
+  } catch (error: any) {
+
+    return res.status(404).json({
       success: false,
       message: error.message,
     });
